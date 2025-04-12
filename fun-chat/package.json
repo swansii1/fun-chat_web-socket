@@ -1,11 +1,49 @@
 {
+  "eslintConfig": {
+    "ignorePatterns": [
+      "**/dist/**"
+    ]
+  },
   "name": "fun-chat",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepare": "husky install",
+    "start": "webpack serve --open"
+  },
+  "lint-staged": {
+    "!**/dist/**": true,
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{js,json,md}": [
+      "prettier --write"
+    ]
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.29.1",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "globals": "^16.0.0",
+    "html-webpack-plugin": "^5.6.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
+    "prettier": "^3.5.3",
+    "ts-loader": "^9.5.2",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.1",
+    "webpack": "^5.99.5",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.1"
+  },
+  "type": "module"
 }
