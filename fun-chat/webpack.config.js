@@ -10,8 +10,15 @@ export default {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        loader: 'ts-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          'style-loader', // Вставляет стили в DOM
+          'css-loader', // Преобразует CSS в CommonJS
+        ],
       },
     ],
   },
