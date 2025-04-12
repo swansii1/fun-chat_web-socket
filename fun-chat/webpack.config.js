@@ -38,7 +38,6 @@ export default {
     },
     compress: true,
     port: 9000,
-    open: true,
     hot: true,
   },
 };
