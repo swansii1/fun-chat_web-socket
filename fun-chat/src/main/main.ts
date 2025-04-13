@@ -1,7 +1,7 @@
 import './main_style.css';
 import { createHtmlElement } from '../helper';
 
-const main = createHtmlElement('main');
+export const main = createHtmlElement('main');
 
 export function createMain() {
   const wrapperMain = createHtmlElement('div', 'wrapper_main');

@@ -1,0 +1,21 @@
+.wrapper_info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    border: 1px solid black;
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+}
+.info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.autor_info{
+    font-size: 18px;
+}
+.wrapper_hiden{
+    display: none;
+}
