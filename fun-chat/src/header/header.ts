@@ -16,7 +16,7 @@ export function createHeader() {
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
   buttonHeader.forEach((elem, ind) => {
-    const btn = createHtmlElement('button', `btn_${ind}`, elem);
+    const btn = createHtmlElement('button', `btn_header`, elem);
     if (ind === 0) {
       btn.addEventListener('click', () => {
         divHaed.classList.add('header_none');

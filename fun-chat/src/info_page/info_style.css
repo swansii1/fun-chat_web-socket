@@ -3,10 +3,12 @@
     flex-direction: column;
     align-items: center;
     gap: 30px;
-    border: 1px solid black;
+    border: 3px solid black;
     max-width: 60%;
     margin: 0 auto;
     padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(128, 128, 128, 0.192);
 }
 .info{
     display: flex;
@@ -18,4 +20,9 @@
 }
 .wrapper_hiden{
     display: none;
+}
+.btn_back:hover{
+    cursor: pointer;
+    background-color: rgb(176, 179, 176);
+    transition: 0.2s;
 }

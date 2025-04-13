@@ -4,6 +4,7 @@
     border: 2px solid black;
     max-width: 60%;
     margin: 0 auto;
+    border-radius: 10px;
 }
 a.footer_info{
     display: flex;
