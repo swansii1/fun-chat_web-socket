@@ -1,4 +1,3 @@
-import { createAuthorization, validateName } from './authorization_page/authorization';
+import { createAuthorization } from './authorization_page/authorization';
 
 createAuthorization();
-validateName();
