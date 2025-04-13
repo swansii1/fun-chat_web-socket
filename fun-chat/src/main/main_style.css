@@ -1,0 +1,16 @@
+.wrapper_main{
+    margin: 0 auto;
+    max-width: 60%;
+    display: flex;
+    gap: 40px;
+}
+.users_container{
+    border: 1px solid black;
+    width: 30%;
+    height: 500px;
+}
+.users_message{
+    border: 1px solid black;
+    width: 70%;
+    height: 500px;
+}

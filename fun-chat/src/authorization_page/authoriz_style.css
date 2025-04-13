@@ -1,5 +1,10 @@
+body{
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 .container_form{
-	min-height: 90vh;
   display: flex;
   justify-content: center;
 	align-items: center;

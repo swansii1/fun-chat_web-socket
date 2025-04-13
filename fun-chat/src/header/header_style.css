@@ -6,6 +6,9 @@
     margin: 0 auto;
     align-items: center;
 }
+.header_none{
+    display: none;
+}
 .btn_container{
     display: flex;
     gap: 10px;

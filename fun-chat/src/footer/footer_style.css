@@ -1,0 +1,14 @@
+.wrapper_footer{
+    display: flex;
+    justify-content: space-around;
+    border: 2px solid black;
+    max-width: 60%;
+    margin: 0 auto;
+}
+a.footer_info{
+    display: flex;
+    align-items: center;
+    list-style-type: none;
+    font-size: 18px;
+    color: black;
+}

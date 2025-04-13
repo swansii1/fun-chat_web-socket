@@ -1,6 +1,8 @@
 import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
-import { createHeader } from '../header/header';
+import { createHeader, divHaed, buttonContainer } from '../header/header';
+import { createFooter } from '../footer/footer';
+import { createMain } from '../main/main';
 
 const containerForm = createHtmlElement('div', 'container_form');
 
@@ -34,8 +36,13 @@ export function createAuthorization() {
   submitButton.type = 'submit';
 
   submitButton.addEventListener('click', () => {
-    containerForm.style.display = 'none';
+    divHaed.classList.remove('header_none');
+    divHaed.textContent = '';
+    containerForm.textContent = '';
+    buttonContainer.textContent = '';
+    createMain();
     createHeader();
+    createFooter();
   });
 
   divForm.append(p, divInput, submitButton);
