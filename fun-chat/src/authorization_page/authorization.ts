@@ -4,8 +4,9 @@ import { createHeader, divHaed, buttonContainer } from '../header/header';
 import { createFooter } from '../footer/footer';
 import { createMain } from '../main/main';
 
-const containerForm = createHtmlElement('div', 'container_form');
+const containerForm = createHtmlElement('div', 'container_form') as HTMLDivElement;
 export let user: string;
+let socket: WebSocket;
 
 export function createAuthorization() {
   const form = createHtmlElement('form', 'form');
@@ -68,7 +69,7 @@ export function createAuthorization() {
     createMain();
     createHeader();
     createFooter();
-    console.log(user);
+    onOpen();
   });
 
   if (nameInput) {
@@ -116,4 +117,11 @@ function validateAllFields() {
 
   submitButton.disabled = !(isNameValid && isPasswordValid);
   submitButton.classList.add('no_disabled');
+}
+
+function onOpen() {
+  socket = new WebSocket(`ws://localhost:4000?username=${encodeURIComponent(user)}`);
+  socket.onopen = () => {
+    console.log('open');
+  };
 }

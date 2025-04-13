@@ -12,7 +12,7 @@ const buttonHeader = ['Инфо', 'Выход'];
 export const buttonContainer = createHtmlElement('div', 'btn_container');
 
 export function createHeader() {
-  const userName = createHtmlElement('p', 'user_name', `Пользователь: ${user}`);
+  const userName = createHtmlElement('p', 'user_name', `Пользователь:  ${user}`);
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
   buttonHeader.forEach((elem, ind) => {
