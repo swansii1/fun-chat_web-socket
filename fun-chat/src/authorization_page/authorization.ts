@@ -5,6 +5,7 @@ import { createFooter } from '../footer/footer';
 import { createMain } from '../main/main';
 
 const containerForm = createHtmlElement('div', 'container_form');
+export let user: string;
 
 export function createAuthorization() {
   const form = createHtmlElement('form', 'form');
@@ -22,7 +23,12 @@ export function createAuthorization() {
     const label = createHtmlElement('label', 'input_label', field.label) as HTMLLabelElement;
     label.htmlFor = field.id;
 
-    const input = createHtmlElement('input', 'input_element') as HTMLInputElement;
+    const input = createHtmlElement(
+      'input',
+      'input_element',
+      '',
+      `input_${field.label}`,
+    ) as HTMLInputElement;
     input.type = field.type;
     input.id = field.id;
     input.name = field.id;
@@ -34,8 +40,11 @@ export function createAuthorization() {
 
   const submitButton = createHtmlElement('button', 'submit_btn', 'Войти') as HTMLButtonElement;
   submitButton.type = 'submit';
+  // submitButton.disabled = true;
 
   submitButton.addEventListener('click', () => {
+    const userInput = document.getElementById('username') as HTMLInputElement;
+    user = userInput.value;
     divHaed.classList.remove('header_none');
     divHaed.textContent = '';
     containerForm.textContent = '';
@@ -43,6 +52,7 @@ export function createAuthorization() {
     createMain();
     createHeader();
     createFooter();
+    console.log(user);
   });
 
   divForm.append(p, divInput, submitButton);

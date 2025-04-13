@@ -1,6 +1,6 @@
 import { createHtmlElement } from '../helper';
 import './header_style.css';
-import { createAuthorization } from '../authorization_page/authorization';
+import { createAuthorization, user } from '../authorization_page/authorization';
 import { main } from '../main/main';
 import { footer, wrapperFooter } from '../footer/footer';
 import { createInfo } from '../info_page/info';
@@ -12,7 +12,7 @@ const buttonHeader = ['Инфо', 'Выход'];
 export const buttonContainer = createHtmlElement('div', 'btn_container');
 
 export function createHeader() {
-  const userName = createHtmlElement('p', 'user_name', 'Пользователь:');
+  const userName = createHtmlElement('p', 'user_name', `Пользователь: ${user}`);
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
   buttonHeader.forEach((elem, ind) => {
