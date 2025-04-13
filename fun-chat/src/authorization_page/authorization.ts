@@ -1,5 +1,7 @@
 import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
+import { createHeader } from '../header/header';
+
 const containerForm = createHtmlElement('div', 'container_form');
 
 export function createAuthorization() {
@@ -30,6 +32,11 @@ export function createAuthorization() {
 
   const submitButton = createHtmlElement('button', 'submit_btn', 'Войти') as HTMLButtonElement;
   submitButton.type = 'submit';
+
+  submitButton.addEventListener('click', () => {
+    containerForm.style.display = 'none';
+    createHeader();
+  });
 
   divForm.append(p, divInput, submitButton);
   form.append(divForm);

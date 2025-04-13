@@ -1,0 +1,12 @@
+.header_container{
+    max-width: 60%;
+    display: flex;
+    border: 2px solid black;
+    justify-content: space-around;
+    margin: 0 auto;
+    align-items: center;
+}
+.btn_container{
+    display: flex;
+    gap: 10px;
+}
