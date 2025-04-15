@@ -1,14 +1,20 @@
 import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
-import { createHeader, divHaed, buttonContainer } from '../header/header';
-import { createFooter } from '../footer/footer';
-import { createMain } from '../main/main';
+import { router } from '../router';
 
-const containerForm = createHtmlElement('div', 'container_form') as HTMLDivElement;
 export let user: string;
 let socket: WebSocket;
 
 export function createAuthorization() {
+  console.log('avtorizathiya');
+
+  const app = document.getElementById('app');
+  if (!app) return;
+
+  app.innerHTML = '';
+
+  const containerForm = createHtmlElement('div', 'container_form') as HTMLDivElement;
+
   const form = createHtmlElement('form', 'form');
   const divForm = createHtmlElement('div', 'form_container');
   const divInput = createHtmlElement('div', 'container_input');
@@ -39,13 +45,9 @@ export function createAuthorization() {
     input.name = field.id;
     input.required = true;
 
-    if (field.id === 'username') {
-      nameInput = input;
-    }
+    if (field.id === 'username') nameInput = input;
+    if (field.id === 'password') passwordInput = input;
 
-    if (field.id === 'password') {
-      passwordInput = input;
-    }
     fieldDiv.append(label, input);
     divInput.append(fieldDiv);
   });
@@ -56,19 +58,15 @@ export function createAuthorization() {
     'Войти',
     'buuton_1',
   ) as HTMLButtonElement;
+
   submitButton.type = 'submit';
   submitButton.disabled = true;
 
-  submitButton.addEventListener('click', () => {
+  submitButton.addEventListener('click', (e) => {
+    e.preventDefault();
     const userInput = document.getElementById('username') as HTMLInputElement;
     user = userInput.value;
-    divHaed.classList.remove('header_none');
-    divHaed.textContent = '';
-    containerForm.textContent = '';
-    buttonContainer.textContent = '';
-    createMain();
-    createHeader();
-    createFooter();
+    router.navigate('/chat');
     onOpen();
   });
 
@@ -84,7 +82,7 @@ export function createAuthorization() {
   divForm.append(p, divInput, submitButton);
   form.append(divForm);
   containerForm.append(form);
-  document.body.append(containerForm);
+  app.append(containerForm);
 }
 
 export function validateName(event: Event) {

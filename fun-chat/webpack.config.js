@@ -44,6 +44,7 @@ export default {
       directory: path.join(__dirname, 'dist'),
     },
     compress: true,
+    historyApiFallback: true,
     port: 9000,
     hot: true,
   },

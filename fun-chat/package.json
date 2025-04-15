@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepare": "husky install",
-    "start": "webpack serve --open"
+    "start": "webpack serve --open --mode development"
   },
   "lint-staged": {
     "!**/dist/**": true,

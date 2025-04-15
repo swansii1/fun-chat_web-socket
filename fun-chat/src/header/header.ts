@@ -1,46 +1,34 @@
 import { createHtmlElement } from '../helper';
 import './header_style.css';
-import { createAuthorization, user } from '../authorization_page/authorization';
-import { main } from '../main/main';
-import { footer, wrapperFooter } from '../footer/footer';
-import { createInfo } from '../info_page/info';
-import { wrapperInfo } from '../info_page/info';
+import { user } from '../authorization_page/authorization';
+import { router } from '../router';
 
-const header = document.createElement('header');
-export const divHaed = createHtmlElement('div', 'header_container');
-const buttonHeader = ['Инфо', 'Выход'];
-export const buttonContainer = createHtmlElement('div', 'btn_container');
+export function createHeader(): HTMLElement {
+  const header = document.createElement('header');
+  const divHead = createHtmlElement('div', 'header_container');
+  const buttonContainer = createHtmlElement('div', 'btn_container');
+  const buttonHeader = ['Инфо', 'Выход'];
 
-export function createHeader() {
-  const userName = createHtmlElement('p', 'user_name', `Пользователь:  ${user}`);
+  const userName = createHtmlElement('p', 'user_name', `Пользователь: ${user || 'Гость'}`);
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
   buttonHeader.forEach((elem, ind) => {
     const btn = createHtmlElement('button', `btn_header`, elem);
     if (ind === 0) {
-      btn.addEventListener('click', () => {
-        divHaed.classList.add('header_none');
-        buttonContainer.textContent = '';
-        main.textContent = '';
-        footer.textContent = '';
-        wrapperFooter.textContent = '';
-        wrapperInfo.classList.remove('wrapper_hiden');
-        createInfo();
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        router.navigate('/info');
       });
     } else if (ind === 1) {
-      btn.addEventListener('click', () => {
-        divHaed.classList.add('header_none');
-        buttonContainer.textContent = '';
-        main.textContent = '';
-        footer.textContent = '';
-        wrapperFooter.textContent = '';
-        createAuthorization();
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        router.navigate('/login');
       });
     }
     buttonContainer.append(btn);
   });
 
-  divHaed.append(userName, titleApp, buttonContainer);
-  header.append(divHaed);
-  document.body.prepend(header);
+  divHead.append(userName, titleApp, buttonContainer);
+  header.append(divHead);
+  return header;
 }

@@ -16,3 +16,8 @@
     height: 500px;
     border-radius: 10px;
 }
+.app-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
