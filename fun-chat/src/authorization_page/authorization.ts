@@ -2,10 +2,16 @@ import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
 import { router } from '../router';
 import { User } from '../intergace';
-export let user: string;
-export let ws: WebSocket;
 
-const generateId = () => Math.random().toString(36).substring(2, 15);
+export let user: string;
+export let ws: WebSocket | null = null;
+export let currentUser: {login:string} | null = null
+
+export const generateId = () => Math.random().toString(36).substring(2, 15);
+
+export function setCurrentUser(user: { login: string } | null) {
+  currentUser = user;
+}
 
 export function connectWebSocket(onOpen: () => void): WebSocket {
   const newWs = new WebSocket(`ws://localhost:4000`);
@@ -102,7 +108,7 @@ export function createAuthorization() {
     e.preventDefault();
     const userName = (document.getElementById('username') as HTMLInputElement).value;
     const password = (document.getElementById('password') as HTMLInputElement).value;
-
+    user = userName
     ws = connectWebSocket(() => {
       const authMessage: User = {
         id: generateId(),

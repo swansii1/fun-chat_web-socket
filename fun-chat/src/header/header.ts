@@ -1,8 +1,8 @@
 import { createHtmlElement } from '../helper';
 import './header_style.css';
-import { user } from '../authorization_page/authorization';
+import { currentUser,setCurrentUser, generateId, user } from '../authorization_page/authorization';
 import { router } from '../router';
-// import { ws } from '../authorization_page/authorization';
+import { ws } from '../authorization_page/authorization';
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -23,6 +23,20 @@ export function createHeader(): HTMLElement {
     } else if (ind === 1) {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
+        if (ws && currentUser) {
+          const logoutMessage = {
+            id: generateId(),
+            type: 'USER_LOGOUT',
+            payload: {
+              user: {
+                login: currentUser.login,
+              },
+            },
+          };
+          ws.send(JSON.stringify(logoutMessage));
+        }
+        ws?.close();
+        setCurrentUser(null);
         router.navigate('/login');
       });
     }
