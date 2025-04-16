@@ -2,6 +2,7 @@ import { createHtmlElement } from '../helper';
 import './header_style.css';
 import { user } from '../authorization_page/authorization';
 import { router } from '../router';
+// import { ws } from '../authorization_page/authorization';
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');

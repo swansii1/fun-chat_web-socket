@@ -1,20 +1,53 @@
 import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
 import { router } from '../router';
-
+import { User } from '../intergace';
 export let user: string;
-let socket: WebSocket;
+export let ws: WebSocket;
+
+const generateId = () => Math.random().toString(36).substring(2, 15);
+
+export function connectWebSocket(onOpen: () => void): WebSocket {
+  const newWs = new WebSocket(`ws://localhost:4000`);
+
+  newWs.addEventListener('open', () => {
+    console.log('Соединение установлено');
+    onOpen();
+  });
+
+  newWs.addEventListener('close', () => {
+    console.log('Соединение закрыто');
+    setTimeout(connectWebSocket, 1000);
+  });
+
+  newWs.addEventListener('error', (error) => {
+    console.error('Ошибка соединения:', error);
+  });
+
+  newWs.addEventListener('message', (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === 'USER_LOGIN' && data.payload.user.isLogined) {
+        user = data.payload.user.login;
+        router.navigate('/chat');
+      } else if (data.type === 'ERROR') {
+        console.error('Ошибка авторизации:', data.payload.error);
+      }
+    } catch (e) {
+      console.error('Ошибка парсинга сообщения:', e);
+    }
+  });
+
+  return newWs;
+}
 
 export function createAuthorization() {
-  console.log('avtorizathiya');
-
   const app = document.getElementById('app');
   if (!app) return;
 
   app.innerHTML = '';
 
   const containerForm = createHtmlElement('div', 'container_form') as HTMLDivElement;
-
   const form = createHtmlElement('form', 'form');
   const divForm = createHtmlElement('div', 'form_container');
   const divInput = createHtmlElement('div', 'container_input');
@@ -45,9 +78,12 @@ export function createAuthorization() {
     input.name = field.id;
     input.required = true;
 
-    if (field.id === 'username') nameInput = input;
-    if (field.id === 'password') passwordInput = input;
-
+    if (field.id === 'username') {
+      nameInput = input;
+    }
+    if (field.id === 'password') {
+      passwordInput = input;
+    }
     fieldDiv.append(label, input);
     divInput.append(fieldDiv);
   });
@@ -62,12 +98,29 @@ export function createAuthorization() {
   submitButton.type = 'submit';
   submitButton.disabled = true;
 
-  submitButton.addEventListener('click', (e) => {
+  submitButton.addEventListener('click', async (e) => {
     e.preventDefault();
-    const userInput = document.getElementById('username') as HTMLInputElement;
-    user = userInput.value;
-    router.navigate('/chat');
-    onOpen();
+    const userName = (document.getElementById('username') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
+
+    ws = connectWebSocket(() => {
+      const authMessage: User = {
+        id: generateId(),
+        type: 'USER_LOGIN',
+        payload: {
+          user: {
+            login: userName,
+            password: password,
+          },
+        },
+      };
+
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(authMessage));
+        console.log('Отправлено:', authMessage);
+      }
+      router.navigate('/chat');
+    });
   });
 
   if (nameInput) {
@@ -115,11 +168,4 @@ function validateAllFields() {
 
   submitButton.disabled = !(isNameValid && isPasswordValid);
   submitButton.classList.add('no_disabled');
-}
-
-function onOpen() {
-  socket = new WebSocket(`ws://localhost:4000?username=${encodeURIComponent(user)}`);
-  socket.onopen = () => {
-    console.log('open');
-  };
 }

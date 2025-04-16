@@ -1,5 +1,6 @@
 import './main_style.css';
 import { createHtmlElement } from '../helper';
+export const ws = new WebSocket(`ws://localhost:4000`);
 
 export const main = createHtmlElement('main');
 
@@ -13,6 +14,16 @@ export function createMain(): HTMLElement {
   const btnSend = createHtmlElement('button', 'send_btn', 'Отправить');
 
   msgInput.placeholder = 'Введите сообщение...';
+
+  msgInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+    }
+  });
+
+  btnSend.addEventListener('click', (e) => {
+    e.preventDefault();
+  });
 
   formMsg.append(msgInput, btnSend);
   messageContainer.append(formMsg);
