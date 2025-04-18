@@ -56,6 +56,18 @@ export function createMain(): HTMLElement {
     e.preventDefault();
     sendMessae();
   });
+  
+  function handleMessageIncoming(event: MessageEvent){
+    const data = JSON.parse(event.data);
+
+    if (data.type === 'MSG_RECEIVE'){
+      const {from, text} = data.payload.message;
+      const messageElem = createHtmlElement('div', 'message', `${from}: ${text}`)
+      messageContainer.append(messageElem)
+    }
+  }
+
+  ws?.addEventListener('message', handleMessageIncoming)
 
   formMsg.append(recipientInput, msgInput, btnSend);
   messageContainer.append(formMsg);
