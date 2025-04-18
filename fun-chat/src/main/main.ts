@@ -14,6 +14,9 @@ export function createMain(): HTMLElement {
   const msgInput = createHtmlElement('input', 'msg_input') as HTMLInputElement;
   const btnSend = createHtmlElement('button', 'send_btn', 'Отправить');
   const recipientInput = createHtmlElement('input', 'recipient_input') as HTMLInputElement;
+  const messageList = createHtmlElement('div', 'messages_list');
+
+  messageContainer.prepend(messageList);
 
   msgInput.placeholder = 'Введите сообщение...';
 
@@ -56,21 +59,23 @@ export function createMain(): HTMLElement {
     e.preventDefault();
     sendMessae();
   });
-  
-  function handleMessageIncoming(event: MessageEvent){
+
+  function handleMessageIncoming(event: MessageEvent) {
     const data = JSON.parse(event.data);
 
-    if (data.type === 'MSG_RECEIVE'){
-      const {from, text} = data.payload.message;
-      const messageElem = createHtmlElement('div', 'message', `${from}: ${text}`)
-      messageContainer.append(messageElem)
+    if (data.type === 'MSG_SEND') {
+      const { from, text } = data.payload.message;
+      console.log(data.payload.message);
+
+      const messageElem = createHtmlElement('h4', 'message', `${from}: ${text}`);
+      messageList.append(messageElem);
     }
   }
 
-  ws?.addEventListener('message', handleMessageIncoming)
+  ws?.addEventListener('message', handleMessageIncoming);
 
   formMsg.append(recipientInput, msgInput, btnSend);
-  messageContainer.append(formMsg);
+  messageContainer.append(messageList, formMsg);
   wrapperMain.append(usersContainer, messageContainer);
   main.append(wrapperMain);
   return main;
