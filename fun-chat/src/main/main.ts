@@ -5,7 +5,6 @@ import { Message } from '../intergace';
 
 export const main = createHtmlElement('main');
 
-// const usersContainer = document.querySelector('.users_container');
 const chatMaps = new Map<string, { from: string; text: string }[]>();
 let currentRecipent: string | null = null;
 
@@ -17,6 +16,14 @@ export function createMain(): HTMLElement {
   const formMsg = createHtmlElement('form', 'send_form');
   const msgInput = createHtmlElement('input', 'msg_input') as HTMLInputElement;
   const btnSend = createHtmlElement('button', 'send_btn', 'Отправить');
+  const infoMessageContainer = createHtmlElement(
+    'h5',
+    'info_message',
+    'Выберите пользователя для отправки сообщений...',
+  );
+  const infoUser = createHtmlElement('div', 'info_user_container');
+  const nikName = createHtmlElement('p', 'nik_name_user');
+  const statusUser = createHtmlElement('p', 'status_user');
   const messageList = createHtmlElement('div', 'messages_list');
 
   messageContainer.prepend(messageList);
@@ -107,15 +114,25 @@ export function createMain(): HTMLElement {
         return;
       }
 
-      users.forEach((user: { login: string }) => {
+      users.forEach((user: { login: string; isLogined: boolean }) => {
         const contElem = createHtmlElement('div', 'user_container');
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const online = createHtmlElement('div', 'indentifiers_online');
 
         contElem.addEventListener('click', () => {
+          if (user.isLogined) {
+            statusUser.classList.remove('offline');
+            statusUser.textContent = 'В сети';
+          } else {
+            statusUser.classList.add('offline');
+            statusUser.textContent = 'Не в сети';
+          }
           currentRecipent = user.login;
-          messageList.innerHTML = '';
+          nikName.textContent = currentRecipent;
+
+          // messageList.textContent = '';
           const history = chatMaps.get(currentRecipent) || [];
+          infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
 
           history.forEach(({ from, text }) => {
             const messageElem = createHtmlElement('h4', 'message', `${from}:${text}`);
@@ -138,14 +155,22 @@ export function createMain(): HTMLElement {
         return;
       }
 
-      users.forEach((user: { login: string }) => {
+      users.forEach((user: { login: string; isLogined: boolean }) => {
         const contElem = createHtmlElement('div', 'user_container');
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const offline = createHtmlElement('div', 'indentifiers_offline');
         contElem.addEventListener('click', () => {
+          if (user.isLogined) {
+            statusUser.textContent = 'В сети';
+          } else {
+            statusUser.classList.add('offline');
+            statusUser.textContent = 'Не в сети';
+          }
           currentRecipent = user.login;
-          messageList.innerHTML = '';
+          nikName.textContent = currentRecipent;
+          // messageList.innerHTML = '';
           const history = chatMaps.get(currentRecipent) || [];
+          infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
 
           history.forEach(({ from, text }) => {
             const messageElem = createHtmlElement('h4', 'message', `${from}:${text}`);
@@ -163,8 +188,10 @@ export function createMain(): HTMLElement {
 
   ws?.addEventListener('message', handleMessageIncoming);
 
+  infoUser.append(nikName, statusUser);
+  messageList.append(infoMessageContainer);
   formMsg.append(msgInput, btnSend);
-  messageContainer.append(messageList, formMsg);
+  messageContainer.append(infoUser, messageList, formMsg);
   wrapperMain.append(usersContainer, messageContainer);
   main.append(wrapperMain);
   return main;

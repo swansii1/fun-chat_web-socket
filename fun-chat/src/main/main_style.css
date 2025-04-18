@@ -41,6 +41,8 @@
 .messages_list{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
     width: 100%;
     height: 100%;
@@ -82,4 +84,25 @@
     background-color: gray;
     border-radius: 50%;
     align-self: center;
+}
+.info_message{
+    font-size: 100%;
+}
+.info_user_container{
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid black;
+    height: 10%;
+}
+.nik_name_user{
+    font-size: 16px;
+    font-weight: bold;
+}
+.status_user{
+    color: green;
+    font-size: 16px;
+    font-weight: bold;
+}
+.offline{
+    color: grey;
 }
