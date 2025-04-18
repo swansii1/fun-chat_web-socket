@@ -4,16 +4,18 @@ import { currentUser, setCurrentUser, generateId , setLoggedOutStatus} from '../
 import { router } from '../router';
 import { ws } from '../authorization_page/authorization';
 
+
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
   const divHead = createHtmlElement('div', 'header_container');
   const buttonContainer = createHtmlElement('div', 'btn_container');
   const buttonHeader = ['Инфо', 'Выход'];
+  const userLogin = currentUser?.login ?? 'Гость';
 
-  const userName = createHtmlElement(
+   const userName = createHtmlElement(
     'p',
     'user_name',
-    `Пользователь: ${currentUser?.login || 'Гость'}`,
+    `Пользователь: ${userLogin}`,
   );
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
@@ -41,6 +43,7 @@ export function createHeader(): HTMLElement {
         }
         ws?.close();
         setLoggedOutStatus(true)
+        sessionStorage.removeItem('userCredentials');
         setCurrentUser(null);
         router.navigate('/login');
       });

@@ -2,10 +2,10 @@ import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
 import { router } from '../router';
 
-export let user: { login: string; password?: string };
+// export let user: { login: string; password?: string };
 export let ws: WebSocket | null = null;
 export let currentUser: { login: string } | null = null;
-export let userCredentials: { login: string; password: string } | null = null;
+export let userCredentials: { login: string; password: string };
 export let isLoggedOut = false;
 
 export function setLoggedOutStatus(status: boolean) {
@@ -17,8 +17,19 @@ export const generateId = () => Math.random().toString(36).substring(2, 15);
 export function setCurrentUser(user: { login: string } | null) {
   currentUser = user;
 }
+
 export function setCredentials(login: string, password: string) {
   userCredentials = { login, password };
+  sessionStorage.setItem('userCredentials', JSON.stringify(userCredentials));
+  setCurrentUser({ login });
+}
+
+export function savedCredentials() {
+  const stored = sessionStorage.getItem('userCredentials');
+  if (stored) {
+    userCredentials = JSON.parse(stored);
+    setCurrentUser({ login: userCredentials.login });
+  }
 }
 
 export function connectWebSocket(): Promise<WebSocket> {
