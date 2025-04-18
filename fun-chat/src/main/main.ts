@@ -5,6 +5,10 @@ import { Message } from '../intergace';
 
 export const main = createHtmlElement('main');
 
+// const usersContainer = document.querySelector('.users_container');
+const chatMaps = new Map<string, { from: string; text: string }[]>();
+let currentRecipent: string | null = null;
+
 export function createMain(): HTMLElement {
   const main = createHtmlElement('main');
   const wrapperMain = createHtmlElement('div', 'wrapper_main');
@@ -13,7 +17,6 @@ export function createMain(): HTMLElement {
   const formMsg = createHtmlElement('form', 'send_form');
   const msgInput = createHtmlElement('input', 'msg_input') as HTMLInputElement;
   const btnSend = createHtmlElement('button', 'send_btn', 'Отправить');
-  const recipientInput = createHtmlElement('input', 'recipient_input') as HTMLInputElement;
   const messageList = createHtmlElement('div', 'messages_list');
 
   messageContainer.prepend(messageList);
@@ -43,22 +46,18 @@ export function createMain(): HTMLElement {
   );
 
   function sendMessae() {
-    if (!ws || !currentUser) {
+    if (!ws || !currentUser || !currentRecipent) {
       return;
     }
-    const text = msgInput.value.trim();
-    const to = recipientInput.value.trim();
 
-    if (!text || !to) {
-      return;
-    }
+    const text = msgInput.value.trim();
 
     const message: Message = {
       id: generateId(),
       type: 'MSG_SEND',
       payload: {
         message: {
-          to,
+          to: currentRecipent,
           text,
         },
       },
@@ -66,6 +65,8 @@ export function createMain(): HTMLElement {
 
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message));
+      const messageElem = createHtmlElement('h4', 'message', `Вы:${text}`);
+      messageList.append(messageElem);
       msgInput.value = '';
     }
   }
@@ -86,24 +87,43 @@ export function createMain(): HTMLElement {
     const active = JSON.parse(event.data);
 
     if (active.type === 'MSG_SEND') {
-      const { from, text } = active.payload.message;
-      console.log(active.payload.message);
+      const { from, text, to } = active.payload.message;
+      const outherUser = from === currentUser?.login ? to : from;
 
-      const messageElem = createHtmlElement('h4', 'message', `${from}: ${text}`);
-      messageList.append(messageElem);
+      const chat = chatMaps.get(outherUser) || [];
+      chat.push({ from, text });
+      chatMaps.set(outherUser, chat);
+
+      if (currentRecipent === from) {
+        const messageElem = createHtmlElement('h4', 'message', `${from}: ${text}`);
+        messageList.append(messageElem);
+      }
     }
 
     if (active.type === 'USER_ACTIVE') {
       const users = active.payload?.users;
-      
+
       if (!Array.isArray(users)) {
         return;
       }
 
-      users.forEach((user: { login: string}) => {
+      users.forEach((user: { login: string }) => {
         const contElem = createHtmlElement('div', 'user_container');
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const online = createHtmlElement('div', 'indentifiers_online');
+
+        contElem.addEventListener('click', () => {
+          currentRecipent = user.login;
+          messageList.innerHTML = '';
+          const history = chatMaps.get(currentRecipent) || [];
+
+          history.forEach(({ from, text }) => {
+            const messageElem = createHtmlElement('h4', 'message', `${from}:${text}`);
+            messageList.append(messageElem);
+          });
+
+          console.log('Клик по пользователю:', user.login);
+        });
 
         userElem.classList.add('online');
         contElem.append(online, userElem);
@@ -118,10 +138,22 @@ export function createMain(): HTMLElement {
         return;
       }
 
-      users.forEach((user: { login: string}) => {
+      users.forEach((user: { login: string }) => {
         const contElem = createHtmlElement('div', 'user_container');
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const offline = createHtmlElement('div', 'indentifiers_offline');
+        contElem.addEventListener('click', () => {
+          currentRecipent = user.login;
+          messageList.innerHTML = '';
+          const history = chatMaps.get(currentRecipent) || [];
+
+          history.forEach(({ from, text }) => {
+            const messageElem = createHtmlElement('h4', 'message', `${from}:${text}`);
+            messageList.append(messageElem);
+          });
+
+          console.log('Клик по пользователю:', user.login);
+        });
 
         contElem.append(offline, userElem);
         usersContainer.append(contElem);
@@ -131,7 +163,7 @@ export function createMain(): HTMLElement {
 
   ws?.addEventListener('message', handleMessageIncoming);
 
-  formMsg.append(recipientInput, msgInput, btnSend);
+  formMsg.append(msgInput, btnSend);
   messageContainer.append(messageList, formMsg);
   wrapperMain.append(usersContainer, messageContainer);
   main.append(wrapperMain);
