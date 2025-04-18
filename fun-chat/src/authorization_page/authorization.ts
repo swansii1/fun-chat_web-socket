@@ -5,7 +5,12 @@ import { router } from '../router';
 export let user: { login: string; password?: string };
 export let ws: WebSocket | null = null;
 export let currentUser: { login: string } | null = null;
-let userCredentials: { login: string; password: string } | null = null;
+export let userCredentials: { login: string; password: string } | null = null;
+export let isLoggedOut = false;
+
+export function setLoggedOutStatus(status: boolean) {
+  isLoggedOut = status;
+}
 
 export const generateId = () => Math.random().toString(36).substring(2, 15);
 
@@ -44,6 +49,10 @@ export function connectWebSocket(): Promise<WebSocket> {
 
     socket.addEventListener('close', () => {
       console.log('Соединение закрыто');
+
+      if (isLoggedOut) {
+        return;
+      }
 
       setTimeout(async () => {
         try {

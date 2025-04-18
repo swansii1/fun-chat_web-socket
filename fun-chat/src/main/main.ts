@@ -42,7 +42,6 @@ export function createMain(): HTMLElement {
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message));
       msgInput.value = '';
-      messageContainer.style.backgroundColor = 'redds';
     }
   }
 

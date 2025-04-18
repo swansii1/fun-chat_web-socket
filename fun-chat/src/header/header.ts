@@ -1,6 +1,6 @@
 import { createHtmlElement } from '../helper';
 import './header_style.css';
-import { currentUser, setCurrentUser, generateId } from '../authorization_page/authorization';
+import { currentUser, setCurrentUser, generateId , setLoggedOutStatus} from '../authorization_page/authorization';
 import { router } from '../router';
 import { ws } from '../authorization_page/authorization';
 
@@ -10,7 +10,11 @@ export function createHeader(): HTMLElement {
   const buttonContainer = createHtmlElement('div', 'btn_container');
   const buttonHeader = ['Инфо', 'Выход'];
 
-  const userName = createHtmlElement('p', 'user_name', `Пользователь: ${currentUser?.login || 'Гость'}`);
+  const userName = createHtmlElement(
+    'p',
+    'user_name',
+    `Пользователь: ${currentUser?.login || 'Гость'}`,
+  );
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
   buttonHeader.forEach((elem, ind) => {
@@ -36,6 +40,7 @@ export function createHeader(): HTMLElement {
           ws.send(JSON.stringify(logoutMessage));
         }
         ws?.close();
+        setLoggedOutStatus(true)
         setCurrentUser(null);
         router.navigate('/login');
       });

@@ -1,8 +1,14 @@
 export interface User {
   id: string;
   type: 'USER_LOGIN';
-  payload: object;
+  payload: {
+    user: {
+      login: string;
+      password: string;
+    };
+  };
 }
+
 export interface Message {
   id: string;
   type: 'MSG_SEND';
