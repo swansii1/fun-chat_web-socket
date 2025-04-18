@@ -9,6 +9,10 @@
     width: 30%;
     height: 500px;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    overflow: auto;
 }
 .users_message{
     border: 1px solid black;
@@ -43,4 +47,41 @@
     width: 100%;
     height: 100%;
     border-bottom: 2px solid black;
+}
+.user_item {
+    padding: 8px;
+    list-style-type: none;
+    border: none;
+    border-radius: 8px;
+}
+
+.user_item.online {
+    font-weight: bold;
+}
+.user_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(128, 128, 128, 0.13);
+    width: 100%;
+    cursor: pointer;
+    gap: 8px;
+}
+.user_container:hover{
+    background-color: rgba(128, 128, 128, 0.384);
+    transition: 0.1s;
+}
+.indentifiers_online{
+    width: 10px;
+    height: 10px;
+    background-color: green;
+    border-radius: 50%;
+    align-self: center;
+}
+.indentifiers_offline{
+    width: 10px;
+    height: 10px;
+    background-color: gray;
+    border-radius: 50%;
+    align-self: center;
 }

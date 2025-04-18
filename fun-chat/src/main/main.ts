@@ -20,6 +20,28 @@ export function createMain(): HTMLElement {
 
   msgInput.placeholder = 'Введите сообщение...';
 
+  ws?.addEventListener(
+    'open',
+    () => {
+      ws?.send(
+        JSON.stringify({
+          id: generateId(),
+          type: 'USER_ACTIVE',
+          payload: null,
+        }),
+      );
+
+      ws?.send(
+        JSON.stringify({
+          id: generateId(),
+          type: 'USER_INACTIVE',
+          payload: null,
+        }),
+      );
+    },
+    { once: true },
+  );
+
   function sendMessae() {
     if (!ws || !currentUser) {
       return;
@@ -61,14 +83,49 @@ export function createMain(): HTMLElement {
   });
 
   function handleMessageIncoming(event: MessageEvent) {
-    const data = JSON.parse(event.data);
+    const active = JSON.parse(event.data);
 
-    if (data.type === 'MSG_SEND') {
-      const { from, text } = data.payload.message;
-      console.log(data.payload.message);
+    if (active.type === 'MSG_SEND') {
+      const { from, text } = active.payload.message;
+      console.log(active.payload.message);
 
       const messageElem = createHtmlElement('h4', 'message', `${from}: ${text}`);
       messageList.append(messageElem);
+    }
+
+    if (active.type === 'USER_ACTIVE') {
+      const users = active.payload?.users;
+      
+      if (!Array.isArray(users)) {
+        return;
+      }
+
+      users.forEach((user: { login: string}) => {
+        const contElem = createHtmlElement('div', 'user_container');
+        const userElem = createHtmlElement('p', 'user_item', user.login);
+        const online = createHtmlElement('div', 'indentifiers_online');
+
+        userElem.classList.add('online');
+        contElem.append(online, userElem);
+        usersContainer.prepend(contElem);
+      });
+    }
+
+    if (active.type === 'USER_INACTIVE') {
+      const users = active.payload?.users;
+
+      if (!Array.isArray(users)) {
+        return;
+      }
+
+      users.forEach((user: { login: string}) => {
+        const contElem = createHtmlElement('div', 'user_container');
+        const userElem = createHtmlElement('p', 'user_item', user.login);
+        const offline = createHtmlElement('div', 'indentifiers_offline');
+
+        contElem.append(offline, userElem);
+        usersContainer.append(contElem);
+      });
     }
   }
 
