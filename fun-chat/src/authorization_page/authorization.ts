@@ -1,50 +1,62 @@
 import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
 import { router } from '../router';
-import { User } from '../intergace';
 
-export let user: string;
+export let user: { login: string; password?: string };
 export let ws: WebSocket | null = null;
-export let currentUser: {login:string} | null = null
+export let currentUser: { login: string } | null = null;
+let userCredentials: { login: string; password: string } | null = null;
 
 export const generateId = () => Math.random().toString(36).substring(2, 15);
 
 export function setCurrentUser(user: { login: string } | null) {
   currentUser = user;
 }
+export function setCredentials(login: string, password: string) {
+  userCredentials = { login, password };
+}
 
-export function connectWebSocket(onOpen: () => void): WebSocket {
-  const newWs = new WebSocket(`ws://localhost:4000`);
+export function connectWebSocket(): Promise<WebSocket> {
+  return new Promise((resolve, reject) => {
+    const socket = new WebSocket('ws://localhost:4000');
 
-  newWs.addEventListener('open', () => {
-    console.log('Соединение установлено');
-    onOpen();
-  });
-
-  newWs.addEventListener('close', () => {
-    console.log('Соединение закрыто');
-    setTimeout(connectWebSocket, 1000);
-  });
-
-  newWs.addEventListener('error', (error) => {
-    console.error('Ошибка соединения:', error);
-  });
-
-  newWs.addEventListener('message', (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      if (data.type === 'USER_LOGIN' && data.payload.user.isLogined) {
-        user = data.payload.user.login;
-        router.navigate('/chat');
-      } else if (data.type === 'ERROR') {
-        console.error('Ошибка авторизации:', data.payload.error);
+    socket.addEventListener('open', () => {
+      console.log('Соединение установлено');
+      if (userCredentials) {
+        const authMessage = {
+          id: generateId(),
+          type: 'USER_LOGIN',
+          payload: {
+            user: userCredentials,
+          },
+        };
+        socket.send(JSON.stringify(authMessage));
       }
-    } catch (e) {
-      console.error('Ошибка парсинга сообщения:', e);
-    }
-  });
+      resolve(socket);
+    });
 
-  return newWs;
+    socket.addEventListener('message', handleMessage);
+
+    socket.addEventListener('error', (e) => {
+      console.error('Ошибка соединения:', e);
+      reject(e);
+    });
+
+    socket.addEventListener('close', () => {
+      console.log('Соединение закрыто');
+
+      setTimeout(async () => {
+        try {
+          const newSocket = await connectWebSocket();
+          ws = newSocket;
+        } catch (err) {
+          console.error('Ошибка при реконнекте:', err);
+        }
+      }, 2000);
+    });
+
+    ws = socket;
+  });
 }
 
 export function createAuthorization() {
@@ -106,27 +118,22 @@ export function createAuthorization() {
 
   submitButton.addEventListener('click', async (e) => {
     e.preventDefault();
-    const userName = (document.getElementById('username') as HTMLInputElement).value;
-    const password = (document.getElementById('password') as HTMLInputElement).value;
-    user = userName
-    ws = connectWebSocket(() => {
-      const authMessage: User = {
-        id: generateId(),
-        type: 'USER_LOGIN',
-        payload: {
-          user: {
-            login: userName,
-            password: password,
-          },
-        },
-      };
+    const userName = nameInput?.value.trim();
+    const password = passwordInput?.value.trim();
 
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify(authMessage));
-        console.log('Отправлено:', authMessage);
+    if (!userName || !password) {
+      return;
+    }
+    setCredentials(userName, password);
+
+    try {
+      await connectWebSocket();
+      if (!ws) {
+        return;
       }
-      router.navigate('/chat');
-    });
+    } catch (err) {
+      console.error('Не удалось подключиться к серверу:', err);
+    }
   });
 
   if (nameInput) {
@@ -158,7 +165,7 @@ export function validateName(event: Event) {
     field?.append(err);
   }
   if (input.value.length > 12) {
-    const err = createHtmlElement('span', 'error', 'До 10 символов');
+    const err = createHtmlElement('span', 'error', 'До 12 символов');
     field?.append(err);
   }
   validateAllFields();
@@ -174,4 +181,33 @@ function validateAllFields() {
 
   submitButton.disabled = !(isNameValid && isPasswordValid);
   submitButton.classList.add('no_disabled');
+}
+
+function handleMessage(event: MessageEvent) {
+  try {
+    const data = JSON.parse(event.data);
+
+    if (data.type === 'USER_LOGIN') {
+      const { user } = data.payload;
+      if (user.isLogined) {
+        setCurrentUser({ login: user.login });
+        router.navigate('/chat');
+      } else {
+        console.log('Неверный логин или пароль');
+      }
+    }
+
+    if (data.type === 'ERROR') {
+      console.log(`Ошибка: ${data.payload.error}`);
+      const form = document.querySelector('.form_container');
+      const existingError = document.querySelector('.error_message');
+      if (existingError) {
+        existingError.remove();
+      }
+      const errormessage = createHtmlElement('div', 'error_message', 'Неверный пароль!');
+      form?.append(errormessage);
+    }
+  } catch (err) {
+    console.error('Ошибка обработки сообщения:', err);
+  }
 }

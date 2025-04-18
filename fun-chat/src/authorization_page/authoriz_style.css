@@ -51,3 +51,9 @@ body{
 .no_disabled:hover{
   background-color: #4286f4;;
 }
+.error_message{
+  background-color: #e61515;
+  border-radius: 5px;
+  color: white;
+  padding-left: 50px;
+}
