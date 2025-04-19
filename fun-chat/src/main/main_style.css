@@ -1,10 +1,11 @@
-.wrapper_main{
+.wrapper_main {
     margin: 0 auto;
     max-width: 60%;
     display: flex;
     gap: 10px;
 }
-.users_container{
+
+.users_container {
     border: 1px solid black;
     width: 30%;
     height: 500px;
@@ -14,7 +15,8 @@
     gap: 5px;
     overflow: auto;
 }
-.users_message{
+
+.users_message {
     border: 1px solid black;
     width: 70%;
     height: 500px;
@@ -22,32 +24,35 @@
     display: flex;
     flex-direction: column;
     justify-content: end;
-    overflow: auto;
 }
-.app-container{
+
+.app-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
-.send_form{
+
+.send_form {
     padding: 10px;
     display: flex;
     gap: 10px;
 }
-.msg_input{
+
+.msg_input {
     width: 100%;
     height: 100%;
 }
-.messages_list{
+
+.messages_list {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
-    width: 100%;
     height: 100%;
     border-bottom: 2px solid black;
+    overflow: scroll;
+    padding: 5px;
 }
+
 .user_item {
     padding: 8px;
     list-style-type: none;
@@ -58,7 +63,8 @@
 .user_item.online {
     font-weight: bold;
 }
-.user_container{
+
+.user_container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -67,42 +73,90 @@
     cursor: pointer;
     gap: 8px;
 }
-.user_container:hover{
+
+.user_container:hover {
     background-color: rgba(128, 128, 128, 0.384);
     transition: 0.1s;
 }
-.indentifiers_online{
+
+.indentifiers_online {
     width: 10px;
     height: 10px;
     background-color: green;
     border-radius: 50%;
     align-self: center;
 }
-.indentifiers_offline{
+
+.indentifiers_offline {
     width: 10px;
     height: 10px;
     background-color: gray;
     border-radius: 50%;
     align-self: center;
 }
-.info_message{
+
+.info_message {
     font-size: 100%;
 }
-.info_user_container{
+
+.info_user_container {
     display: flex;
     justify-content: space-around;
     border-bottom: 2px solid black;
     height: 10%;
 }
-.nik_name_user{
+
+.nik_name_user {
     font-size: 16px;
     font-weight: bold;
 }
-.status_user{
+
+.status_user {
     color: green;
     font-size: 16px;
     font-weight: bold;
 }
-.offline{
+
+.offline {
     color: grey;
+}
+
+.msg_container {
+    border: 1px solid;
+    width: 35%;
+}
+
+.msg_container_you {
+    border: 1px solid;
+    width: 35%;
+}
+
+.messages_right {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 10px;
+}
+
+.messages_left {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+}
+
+.message_from {
+    padding-bottom: 5px;
+    background-color: #b1a8a8;
+    margin: 0;
+    padding-left: 5px;
+    border-bottom: 2px solid;
+}
+
+.text_user {
+    margin: 0;
+    background-color: #8080803d;
+    padding: 5px;
 }
