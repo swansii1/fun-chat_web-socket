@@ -174,20 +174,22 @@ export function createAuthorization() {
 export function validateName(event: Event) {
   const input = event.target as HTMLInputElement;
   const field = input.closest('.input_field');
+  const isPasswordField = input.id === 'password';
 
   const existingError = field?.querySelector('.error');
-  if (existingError) {
-    existingError.remove();
+  if (existingError) existingError.remove();
+
+  const errors: string[] = [];
+
+  if (input.value.length < 3) errors.push('От 3 символов');
+  if (input.value.length > 12) errors.push('До 12 символов');
+  if (isPasswordField && !hasUpperCase(input.value)) errors.push('Нужна заглавная буква');
+
+  if (errors.length > 0) {
+    const errorElement = createHtmlElement('span', 'error', errors.join(', '));
+    field?.append(errorElement);
   }
 
-  if (input.value.length < 3) {
-    const err = createHtmlElement('span', 'error', 'От 3 символов');
-    field?.append(err);
-  }
-  if (input.value.length > 12) {
-    const err = createHtmlElement('span', 'error', 'До 12 символов');
-    field?.append(err);
-  }
   validateAllFields();
 }
 
@@ -197,10 +199,23 @@ function validateAllFields() {
   const submitButton = document.querySelector('.submit_btn') as HTMLButtonElement;
 
   const isNameValid = nameInput.value.length >= 3 && nameInput.value.length <= 12;
-  const isPasswordValid = passwordInput.value.length >= 3 && passwordInput.value.length <= 12;
+  const isPasswordValid =
+    passwordInput.value.length >= 3 &&
+    passwordInput.value.length <= 12 &&
+    hasUpperCase(passwordInput.value);
 
   submitButton.disabled = !(isNameValid && isPasswordValid);
   submitButton.classList.add('no_disabled');
+}
+
+function hasUpperCase(str: string): boolean {
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (char === char.toUpperCase() && char !== char.toLowerCase()) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function handleMessage(event: MessageEvent) {
