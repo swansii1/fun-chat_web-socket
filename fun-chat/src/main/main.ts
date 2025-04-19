@@ -6,7 +6,7 @@ import { Message } from '../intergace';
 export const main = createHtmlElement('main');
 
 const chatMaps = new Map<string, { from: string; text: string }[]>();
-let currentRecipent: string | null = null;
+let currentRecipent: string;
 
 export function createMain(): HTMLElement {
   const main = createHtmlElement('main');
@@ -99,30 +99,30 @@ export function createMain(): HTMLElement {
 
   function handleMessageIncoming(event: MessageEvent) {
     const active = JSON.parse(event.data);
-    
-      if (active.type === 'MSG_SEND') {
-        const { from, text, to } = active.payload.message;
-        const outherUser = from === currentUser?.login ? to : from;
 
-        const chat = chatMaps.get(outherUser) || [];
-        chat.push({ from, text });
-        chatMaps.set(outherUser, chat);
+    if (active.type === 'MSG_SEND') {
+      const { from, text, to } = active.payload.message;
+      const outherUser = from === currentUser?.login ? to : from;
 
-        if (currentRecipent === from) {
-          const messageContainer = createHtmlElement(
-            'div',
-            from === currentUser?.login ? 'msg_container_you' : 'msg_container',
-          );
-          const textContent = createHtmlElement('h4', 'text_user', text);
-          const nameUser = createHtmlElement(
-            'p',
-            'message_from',
-            from === currentUser?.login ? 'Вы' : from,
-          );
-          messageContainer.append(nameUser, textContent);
-          messageList.append(messageContainer);
-        }
+      const chat = chatMaps.get(outherUser) || [];
+      chat.push({ from, text });
+      chatMaps.set(outherUser, chat);
+
+      if (currentRecipent === from) {
+        const messageContainer = createHtmlElement(
+          'div',
+          from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+        );
+        const textContent = createHtmlElement('h4', 'text_user', text);
+        const nameUser = createHtmlElement(
+          'p',
+          'message_from',
+          from === currentUser?.login ? 'Вы' : from,
+        );
+        messageContainer.append(nameUser, textContent);
+        messageList.append(messageContainer);
       }
+    }
 
     if (active.type === 'USER_ACTIVE') {
       const users = active.payload?.users;
@@ -137,17 +137,26 @@ export function createMain(): HTMLElement {
         const online = createHtmlElement('div', 'indentifiers_online');
 
         contElem.addEventListener('click', () => {
+          ws?.send(
+            JSON.stringify({
+              id: generateId(),
+              type: 'MSG_FROM_USER',
+              payload: {
+                user: {
+                  login: user.login,
+                },
+              },
+            }),
+          );
+
           if (user.isLogined) {
             statusUser.classList.remove('offline');
             statusUser.textContent = 'В сети';
-          } else {
-            statusUser.classList.add('offline');
-            statusUser.textContent = 'Не в сети';
           }
           currentRecipent = user.login;
           nikName.textContent = currentRecipent;
 
-          // messageList.textContent = '';
+          messageList.textContent = '';
           const history = chatMaps.get(currentRecipent) || [];
           infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
 
@@ -166,7 +175,9 @@ export function createMain(): HTMLElement {
             messageList.append(messageContainer);
           });
 
-          console.log('Клик по пользователю:', user.login);
+          setTimeout(() => {
+            messageList.scrollTop = messageList.scrollHeight;
+          }, 10);
         });
 
         userElem.classList.add('online');
@@ -182,11 +193,22 @@ export function createMain(): HTMLElement {
         return;
       }
 
-      users.forEach((user: { login: string; isLogined: boolean }) => {
+       users.forEach((user: { login: string; isLogined: boolean }) => {
         const contElem = createHtmlElement('div', 'user_container');
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const offline = createHtmlElement('div', 'indentifiers_offline');
         contElem.addEventListener('click', () => {
+          ws?.send(
+            JSON.stringify({
+              id: generateId(),
+              type: 'MSG_FROM_USER',
+              payload: {
+                user: {
+                  login: user.login,
+                },
+              },
+            }),
+          );
           if (user.isLogined) {
             statusUser.textContent = 'В сети';
           } else {
@@ -195,7 +217,7 @@ export function createMain(): HTMLElement {
           }
           currentRecipent = user.login;
           nikName.textContent = currentRecipent;
-          // messageList.innerHTML = '';
+          messageList.innerHTML = '';
           const history = chatMaps.get(currentRecipent) || [];
           infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
 
@@ -213,12 +235,42 @@ export function createMain(): HTMLElement {
             messageContainer.append(nameUser, textContent);
             messageList.append(messageContainer);
           });
-
-          console.log('Клик по пользователю:', user.login);
+          setTimeout(() => {
+            messageList.scrollTop = messageList.scrollHeight;
+          }, 10);
         });
 
-        contElem.append(offline, userElem);
-        usersContainer.append(contElem);
+         contElem.append(offline, userElem);
+         usersContainer.append(contElem);
+      });
+    }
+
+    if (active.type === 'MSG_FROM_USER') {
+      const messages = active.payload?.messages;
+
+      if (!Array.isArray(messages)) return;
+
+      messageList.innerHTML = '';
+      infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
+
+      messages.forEach(({ from, text }: { from: string; text: string }) => {
+        const messageContainer = createHtmlElement(
+          'div',
+          from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+        );
+        const textContent = createHtmlElement('h4', 'text_user', text);
+        const nameUser = createHtmlElement(
+          'p',
+          'message_from',
+          from === currentUser?.login ? 'Вы' : from,
+        );
+        messageContainer.append(nameUser, textContent);
+        messageList.append(messageContainer);
+
+        const outherUser = from === currentUser?.login ? currentRecipent : from;
+        const history = chatMaps.get(outherUser) || [];
+        history.push({ from, text });
+        chatMaps.set(outherUser, history);
       });
     }
   }
