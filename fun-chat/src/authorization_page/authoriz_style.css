@@ -58,7 +58,12 @@ body{
 .error_message{
   background-color: #e61515;
   border-radius: 5px;
+  height: 30px;
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5px;
 }
 .form_container{
     width: 300px;

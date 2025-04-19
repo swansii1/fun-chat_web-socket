@@ -142,61 +142,63 @@ export function createMain(): HTMLElement {
         return;
       }
 
-      users.forEach((user: { login: string; isLogined: boolean }) => {
-        const contElem = createHtmlElement('div', 'user_container');
-        const userElem = createHtmlElement('p', 'user_item', user.login);
-        const online = createHtmlElement('div', 'indentifiers_online');
+      users
+        .filter((user: { login: string }) => user.login !== currentUser?.login)
+        .forEach((user: { login: string; isLogined: boolean }) => {
+          const contElem = createHtmlElement('div', 'user_container');
+          const userElem = createHtmlElement('p', 'user_item', user.login);
+          const online = createHtmlElement('div', 'indentifiers_online');
 
-        contElem.addEventListener('click', () => {
-          msgInput.disabled = false;
-          btnSend.disabled = msgInput.value.trim() === '';
-          ws?.send(
-            JSON.stringify({
-              id: generateId(),
-              type: 'MSG_FROM_USER',
-              payload: {
-                user: {
-                  login: user.login,
+          contElem.addEventListener('click', () => {
+            msgInput.disabled = false;
+            btnSend.disabled = msgInput.value.trim() === '';
+            ws?.send(
+              JSON.stringify({
+                id: generateId(),
+                type: 'MSG_FROM_USER',
+                payload: {
+                  user: {
+                    login: user.login,
+                  },
                 },
-              },
-            }),
-          );
-
-          if (user.isLogined) {
-            statusUser.classList.remove('offline');
-            statusUser.textContent = 'В сети';
-          }
-          currentRecipent = user.login;
-          nikName.textContent = currentRecipent;
-
-          messageList.textContent = '';
-          const history = chatMaps.get(currentRecipent) || [];
-          infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
-
-          history.forEach(({ from, text }) => {
-            const messageContainer = createHtmlElement(
-              'div',
-              from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+              }),
             );
-            const textContent = createHtmlElement('h4', 'text_user', text);
-            const nameUser = createHtmlElement(
-              'p',
-              'message_from',
-              from === currentUser?.login ? 'Вы' : from,
-            );
-            messageContainer.append(nameUser, textContent);
-            messageList.append(messageContainer);
+
+            if (user.isLogined) {
+              statusUser.classList.remove('offline');
+              statusUser.textContent = 'В сети';
+            }
+            currentRecipent = user.login;
+            nikName.textContent = currentRecipent;
+
+            messageList.textContent = '';
+            const history = chatMaps.get(currentRecipent) || [];
+            infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
+
+            history.forEach(({ from, text }) => {
+              const messageContainer = createHtmlElement(
+                'div',
+                from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+              );
+              const textContent = createHtmlElement('h4', 'text_user', text);
+              const nameUser = createHtmlElement(
+                'p',
+                'message_from',
+                from === currentUser?.login ? 'Вы' : from,
+              );
+              messageContainer.append(nameUser, textContent);
+              messageList.append(messageContainer);
+            });
+
+            setTimeout(() => {
+              messageList.scrollTop = messageList.scrollHeight;
+            }, 10);
           });
 
-          setTimeout(() => {
-            messageList.scrollTop = messageList.scrollHeight;
-          }, 10);
+          userElem.classList.add('online');
+          contElem.append(online, userElem);
+          usersContainer.prepend(contElem);
         });
-
-        userElem.classList.add('online');
-        contElem.append(online, userElem);
-        usersContainer.prepend(contElem);
-      });
     }
 
     if (active.type === 'USER_INACTIVE') {
