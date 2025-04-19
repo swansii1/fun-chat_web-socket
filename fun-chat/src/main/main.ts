@@ -25,9 +25,6 @@ export function createMain(): HTMLElement {
   const nikName = createHtmlElement('p', 'nik_name_user');
   const statusUser = createHtmlElement('p', 'status_user');
   const messageList = createHtmlElement('div', 'messages_list');
-  const messageLeft = createHtmlElement('div', 'messages_left');
-  const messageRight = createHtmlElement('div', 'messages_right');
-
 
   messageContainer.prepend(messageList);
 
@@ -79,7 +76,7 @@ export function createMain(): HTMLElement {
       const textContent = createHtmlElement('h4', 'text_user', `${text}`);
       const nameUser = createHtmlElement('p', 'message_from', `Вы`);
       messageContainer.append(nameUser, textContent);
-      messageRight.append(messageContainer);
+      messageList.append(messageContainer);
       msgInput.value = '';
     }
   }
@@ -89,6 +86,7 @@ export function createMain(): HTMLElement {
       infoMessageContainer.textContent = '';
       e.preventDefault();
       sendMessae();
+      messageList.scrollTop = messageList.scrollHeight;
     }
   });
 
@@ -96,27 +94,35 @@ export function createMain(): HTMLElement {
     infoMessageContainer.textContent = '';
     e.preventDefault();
     sendMessae();
+    messageList.scrollTop = messageList.scrollHeight;
   });
 
   function handleMessageIncoming(event: MessageEvent) {
     const active = JSON.parse(event.data);
+    
+      if (active.type === 'MSG_SEND') {
+        const { from, text, to } = active.payload.message;
+        const outherUser = from === currentUser?.login ? to : from;
 
-    if (active.type === 'MSG_SEND') {
-      const { from, text, to } = active.payload.message;
-      const outherUser = from === currentUser?.login ? to : from;
+        const chat = chatMaps.get(outherUser) || [];
+        chat.push({ from, text });
+        chatMaps.set(outherUser, chat);
 
-      const chat = chatMaps.get(outherUser) || [];
-      chat.push({ from, text });
-      chatMaps.set(outherUser, chat);
-
-      if (currentRecipent === from) {
-        const messageContainer = createHtmlElement('div', 'msg_container');
-        const textContent = createHtmlElement('h4', 'text_user', `${text}`);
-        const nameUser = createHtmlElement('p', 'message_from', `${from}`);
-        messageContainer.append(nameUser, textContent);
-        messageLeft.append(messageContainer);
+        if (currentRecipent === from) {
+          const messageContainer = createHtmlElement(
+            'div',
+            from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+          );
+          const textContent = createHtmlElement('h4', 'text_user', text);
+          const nameUser = createHtmlElement(
+            'p',
+            'message_from',
+            from === currentUser?.login ? 'Вы' : from,
+          );
+          messageContainer.append(nameUser, textContent);
+          messageList.append(messageContainer);
+        }
       }
-    }
 
     if (active.type === 'USER_ACTIVE') {
       const users = active.payload?.users;
@@ -146,9 +152,16 @@ export function createMain(): HTMLElement {
           infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
 
           history.forEach(({ from, text }) => {
-            const messageContainer = createHtmlElement('div', 'msg_container');
-            const textContent = createHtmlElement('h4', 'text_user', `${text}`);
-            const nameUser = createHtmlElement('p', 'message_from', `${from}`);
+            const messageContainer = createHtmlElement(
+              'div',
+              from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+            );
+            const textContent = createHtmlElement('h4', 'text_user', text);
+            const nameUser = createHtmlElement(
+              'p',
+              'message_from',
+              from === currentUser?.login ? 'Вы' : from,
+            );
             messageContainer.append(nameUser, textContent);
             messageList.append(messageContainer);
           });
@@ -187,9 +200,16 @@ export function createMain(): HTMLElement {
           infoMessageContainer.textContent = 'Напишите ваше первое сообщение...';
 
           history.forEach(({ from, text }) => {
-            const messageContainer = createHtmlElement('div', 'msg_container');
-            const textContent = createHtmlElement('h4', 'text_user', `${text}`);
-            const nameUser = createHtmlElement('p', 'message_from', `${from}`);
+            const messageContainer = createHtmlElement(
+              'div',
+              from === currentUser?.login ? 'msg_container_you' : 'msg_container',
+            );
+            const textContent = createHtmlElement('h4', 'text_user', text);
+            const nameUser = createHtmlElement(
+              'p',
+              'message_from',
+              from === currentUser?.login ? 'Вы' : from,
+            );
             messageContainer.append(nameUser, textContent);
             messageList.append(messageContainer);
           });
@@ -206,7 +226,7 @@ export function createMain(): HTMLElement {
   ws?.addEventListener('message', handleMessageIncoming);
 
   infoUser.append(nikName, statusUser);
-  messageList.append(messageLeft,infoMessageContainer,messageRight);
+  messageList.append(infoMessageContainer);
   formMsg.append(msgInput, btnSend);
   messageContainer.append(infoUser, messageList, formMsg);
   wrapperMain.append(usersContainer, messageContainer);

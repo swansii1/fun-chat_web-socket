@@ -51,6 +51,7 @@
     border-bottom: 2px solid black;
     overflow: scroll;
     padding: 5px;
+    scroll-behavior: smooth;
 }
 
 .user_item {
@@ -120,33 +121,6 @@
 .offline {
     color: grey;
 }
-
-.msg_container {
-    border: 1px solid;
-    width: 35%;
-}
-
-.msg_container_you {
-    border: 1px solid;
-    width: 35%;
-}
-
-.messages_right {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: end;
-    gap: 10px;
-}
-
-.messages_left {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 10px;
-}
-
 .message_from {
     padding-bottom: 5px;
     background-color: #b1a8a8;
@@ -159,4 +133,23 @@
     margin: 0;
     background-color: #8080803d;
     padding: 5px;
-}
+} 
+ .msg_container,
+ .msg_container_you {
+     border: 1px solid;
+     padding: 5px;
+     margin: 5px;
+     display: flex;
+     flex-direction: column;
+     min-width: 30%;
+ }
+
+ .msg_container {
+     align-self: flex-start;
+     background-color: #f1f1f1;
+ }
+
+ .msg_container_you {
+     align-self: flex-end;
+     background-color: #f1f1f1;
+ }
