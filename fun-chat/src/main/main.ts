@@ -15,7 +15,7 @@ export function createMain(): HTMLElement {
   const messageContainer = createHtmlElement('div', 'users_message');
   const formMsg = createHtmlElement('form', 'send_form');
   const msgInput = createHtmlElement('input', 'msg_input') as HTMLInputElement;
-  const btnSend = createHtmlElement('button', 'send_btn', 'Отправить');
+  const btnSend = createHtmlElement('button', 'send_btn', 'Отправить') as HTMLButtonElement;
   const infoMessageContainer = createHtmlElement(
     'h5',
     'info_message',
@@ -25,6 +25,13 @@ export function createMain(): HTMLElement {
   const nikName = createHtmlElement('p', 'nik_name_user');
   const statusUser = createHtmlElement('p', 'status_user');
   const messageList = createHtmlElement('div', 'messages_list');
+
+  msgInput.disabled = true;
+  btnSend.disabled = true;
+
+  msgInput.addEventListener('input', () => {
+    btnSend.disabled = msgInput.value.trim() === '';
+  });
 
   messageContainer.prepend(messageList);
 
@@ -59,6 +66,10 @@ export function createMain(): HTMLElement {
 
     const text = msgInput.value.trim();
 
+    if (!text) {
+      btnSend.disabled = true;
+      return;
+    }
     const message: Message = {
       id: generateId(),
       type: 'MSG_SEND',
@@ -137,6 +148,8 @@ export function createMain(): HTMLElement {
         const online = createHtmlElement('div', 'indentifiers_online');
 
         contElem.addEventListener('click', () => {
+          msgInput.disabled = false;
+          btnSend.disabled = msgInput.value.trim() === '';
           ws?.send(
             JSON.stringify({
               id: generateId(),
@@ -193,11 +206,13 @@ export function createMain(): HTMLElement {
         return;
       }
 
-       users.forEach((user: { login: string; isLogined: boolean }) => {
+      users.forEach((user: { login: string; isLogined: boolean }) => {
         const contElem = createHtmlElement('div', 'user_container');
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const offline = createHtmlElement('div', 'indentifiers_offline');
         contElem.addEventListener('click', () => {
+          msgInput.disabled = false;
+          btnSend.disabled = msgInput.value.trim() === '';
           ws?.send(
             JSON.stringify({
               id: generateId(),
@@ -240,8 +255,8 @@ export function createMain(): HTMLElement {
           }, 10);
         });
 
-         contElem.append(offline, userElem);
-         usersContainer.append(contElem);
+        contElem.append(offline, userElem);
+        usersContainer.append(contElem);
       });
     }
 
