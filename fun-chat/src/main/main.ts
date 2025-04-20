@@ -118,6 +118,11 @@ export function createMain(): HTMLElement {
       users.forEach((elem) => {
         if (elem.textContent === login) {
           const contElem = elem.closest('div');
+          const statusOffline = document.querySelector('.status_user');
+          if (statusOffline) {
+            statusOffline.classList.add('offline');
+            statusOffline.textContent = 'Не в сети';
+          }
           const indentifie = contElem?.querySelector('.indentifiers_online');
           indentifie?.classList.remove('indentifiers_online');
           indentifie?.classList.add('indentifiers_offline');
@@ -134,6 +139,11 @@ export function createMain(): HTMLElement {
       users.forEach((elem) => {
         if (elem.textContent === login) {
           const contElem = elem.closest('div');
+          const statusOffline = document.querySelector('.status_user');
+          if (statusOffline) {
+            statusOffline.textContent = 'В сети';
+            statusOffline.classList.remove('offline');
+          }
           const indentifie = contElem?.querySelector('.indentifiers_offline');
           indentifie?.classList.remove('indentifiers_offline');
           indentifie?.classList.add('indentifiers_online');
@@ -183,6 +193,7 @@ export function createMain(): HTMLElement {
           const online = createHtmlElement('div', 'indentifiers_online');
 
           contElem.addEventListener('click', () => {
+            infoUser.style.display = 'flex';
             msgInput.disabled = false;
             btnSend.disabled = msgInput.value.trim() === '';
             ws?.send(
@@ -246,6 +257,7 @@ export function createMain(): HTMLElement {
         const userElem = createHtmlElement('p', 'user_item', user.login);
         const offline = createHtmlElement('div', 'indentifiers_offline');
         contElem.addEventListener('click', () => {
+          infoUser.style.display = 'flex';
           msgInput.disabled = false;
           btnSend.disabled = msgInput.value.trim() === '';
           ws?.send(
@@ -325,7 +337,7 @@ export function createMain(): HTMLElement {
     }
   }
 
-  ws?.addEventListener('message', handleMessageIncoming);
+   ws?.addEventListener('message', handleMessageIncoming);
 
   infoUser.append(nikName, statusUser);
   messageList.append(infoMessageContainer);
