@@ -2,7 +2,6 @@ import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
 import { router } from '../router';
 
-// export let user: { login: string; password?: string };
 export let ws: WebSocket | null = null;
 export let currentUser: { login: string } | null = null;
 export let userCredentials: { login: string; password: string };

@@ -111,6 +111,38 @@ export function createMain(): HTMLElement {
   function handleMessageIncoming(event: MessageEvent) {
     const active = JSON.parse(event.data);
 
+    if (active.type === 'USER_EXTERNAL_LOGOUT') {
+      const { login, isLogined } = active.payload.user;
+      const users = document.querySelectorAll('.user_item');
+
+      users.forEach((elem) => {
+        if (elem.textContent === login) {
+          const contElem = elem.closest('div');
+          const indentifie = contElem?.querySelector('.indentifiers_online');
+          indentifie?.classList.remove('indentifiers_online');
+          indentifie?.classList.add('indentifiers_offline');
+          console.log(contElem);
+        }
+      });
+      console.log(login, isLogined);
+    }
+
+    if (active.type === 'USER_EXTERNAL_LOGIN') {
+      const { login, isLogined } = active.payload.user;
+      const users = document.querySelectorAll('.user_item');
+
+      users.forEach((elem) => {
+        if (elem.textContent === login) {
+          const contElem = elem.closest('div');
+          const indentifie = contElem?.querySelector('.indentifiers_offline');
+          indentifie?.classList.remove('indentifiers_offline');
+          indentifie?.classList.add('indentifiers_online');
+          console.log(contElem);
+        }
+      });
+      console.log(login, isLogined);
+    }
+
     if (active.type === 'MSG_SEND') {
       const { from, text, to } = active.payload.message;
       const outherUser = from === currentUser?.login ? to : from;
