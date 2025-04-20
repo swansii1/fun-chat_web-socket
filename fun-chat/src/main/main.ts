@@ -37,6 +37,24 @@ export function createMain(): HTMLElement {
 
   msgInput.placeholder = 'Введите сообщение...';
 
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(
+      JSON.stringify({
+        id: generateId(),
+        type: 'USER_ACTIVE',
+        payload: null,
+      }),
+    );
+
+    ws.send(
+      JSON.stringify({
+        id: generateId(),
+        type: 'USER_INACTIVE',
+        payload: null,
+      }),
+    );
+  }
+
   ws?.addEventListener(
     'open',
     () => {
@@ -81,7 +99,7 @@ export function createMain(): HTMLElement {
       },
     };
 
-    if (ws.readyState === WebSocket.OPEN) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify(message));
       const messageContainer = createHtmlElement('div', 'msg_container_you');
       const textContent = createHtmlElement('h4', 'text_user', `${text}`);
