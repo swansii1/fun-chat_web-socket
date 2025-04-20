@@ -136,6 +136,7 @@ export function createMain(): HTMLElement {
     }
 
     if (active.type === 'USER_ACTIVE') {
+      usersContainer.innerHTML = '';
       const users = active.payload?.users;
 
       if (!Array.isArray(users)) {

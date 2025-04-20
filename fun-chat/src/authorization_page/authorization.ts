@@ -226,6 +226,20 @@ function handleMessage(event: MessageEvent) {
       const { user } = data.payload;
       if (user.isLogined) {
         setCurrentUser({ login: user.login });
+        ws?.send(
+          JSON.stringify({
+            id: generateId(),
+            type: 'USER_ACTIVE',
+            payload: null,
+          }),
+        );
+        ws?.send(
+          JSON.stringify({
+            id: generateId(),
+            type: 'USER_INACTIVE',
+            payload: null,
+          }),
+        );
         router.navigate('/chat');
       } else {
         console.log('Неверный логин или пароль');
