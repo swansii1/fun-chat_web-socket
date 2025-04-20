@@ -132,6 +132,16 @@ export function createAuthorization() {
     'buuton_1',
   ) as HTMLButtonElement;
 
+  const info = createHtmlElement(
+    'button',
+    'info_btn',
+    'Инфо'
+  ) as HTMLButtonElement;
+
+  info.addEventListener('click',() => {
+    router.navigate('/info');
+  });
+
   submitButton.type = 'submit';
   submitButton.disabled = true;
 
@@ -164,7 +174,7 @@ export function createAuthorization() {
     passwordInput.addEventListener('blur', validateName);
   }
 
-  divForm.append(p, divInput, submitButton);
+  divForm.append(p, divInput, submitButton,info);
   form.append(divForm);
   containerForm.append(form);
   app.append(containerForm);
