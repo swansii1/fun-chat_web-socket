@@ -6,6 +6,7 @@ export let ws: WebSocket | null = null;
 export let currentUser: { login: string } | null = null;
 export let userCredentials: { login: string; password: string };
 export let isLoggedOut = false;
+const page = window.location.pathname;
 
 export function setLoggedOutStatus(status: boolean) {
   isLoggedOut = status;
@@ -132,13 +133,10 @@ export function createAuthorization() {
     'buuton_1',
   ) as HTMLButtonElement;
 
-  const info = createHtmlElement(
-    'button',
-    'info_btn',
-    'Инфо'
-  ) as HTMLButtonElement;
+  const info = createHtmlElement('button', 'info_btn', 'Инфо') as HTMLButtonElement;
 
-  info.addEventListener('click',() => {
+  info.addEventListener('click', () => {
+    sessionStorage.setItem('backPage', page);
     router.navigate('/info');
   });
 
@@ -174,7 +172,7 @@ export function createAuthorization() {
     passwordInput.addEventListener('blur', validateName);
   }
 
-  divForm.append(p, divInput, submitButton,info);
+  divForm.append(p, divInput, submitButton, info);
   form.append(divForm);
   containerForm.append(form);
   app.append(containerForm);

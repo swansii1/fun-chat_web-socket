@@ -25,7 +25,9 @@ export function createInfo(): HTMLElement {
 
   const btnBack = createHtmlElement('button', 'btn_back', 'Вернуться назад');
   btnBack.addEventListener('click', () => {
-    router.navigate('/chat');
+    const backPage = sessionStorage.getItem('backPage') || '/login';
+    sessionStorage.removeItem('backPage');
+    router.navigate(backPage);
   });
 
   divInfo.append(infoApp, infoApp1);

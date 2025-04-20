@@ -1,9 +1,13 @@
 import { createHtmlElement } from '../helper';
 import './header_style.css';
-import { currentUser, setCurrentUser, generateId , setLoggedOutStatus} from '../authorization_page/authorization';
+import {
+  currentUser,
+  setCurrentUser,
+  generateId,
+  setLoggedOutStatus,
+} from '../authorization_page/authorization';
 import { router } from '../router';
 import { ws } from '../authorization_page/authorization';
-
 
 export function createHeader(): HTMLElement {
   const header = document.createElement('header');
@@ -12,11 +16,7 @@ export function createHeader(): HTMLElement {
   const buttonHeader = ['Инфо', 'Выход'];
   const userLogin = currentUser?.login ?? 'Гость';
 
-   const userName = createHtmlElement(
-    'p',
-    'user_name',
-    `Пользователь: ${userLogin}`,
-  );
+  const userName = createHtmlElement('p', 'user_name', `Пользователь: ${userLogin}`);
   const titleApp = createHtmlElement('p', 'user_name', 'Веселый чат');
 
   buttonHeader.forEach((elem, ind) => {
@@ -24,6 +24,7 @@ export function createHeader(): HTMLElement {
     if (ind === 0) {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
+        sessionStorage.setItem('backPage', window.location.pathname);
         router.navigate('/info');
       });
     } else if (ind === 1) {
@@ -42,7 +43,7 @@ export function createHeader(): HTMLElement {
           ws.send(JSON.stringify(logoutMessage));
         }
         ws?.close();
-        setLoggedOutStatus(true)
+        setLoggedOutStatus(true);
         sessionStorage.removeItem('userCredentials');
         setCurrentUser(null);
         router.navigate('/login');

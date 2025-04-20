@@ -337,7 +337,7 @@ export function createMain(): HTMLElement {
     }
   }
 
-   ws?.addEventListener('message', handleMessageIncoming);
+  ws?.addEventListener('message', handleMessageIncoming);
 
   infoUser.append(nikName, statusUser);
   messageList.append(infoMessageContainer);
