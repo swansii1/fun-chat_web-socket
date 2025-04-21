@@ -161,6 +161,19 @@
  .send_btn{
     width: 30%;
  }
+ .send_btn:hover{
+    cursor: pointer;
+    background-color: #b1a8a8;
+    transition: 0.2s;
+ }
+ .msg_input:focus{
+    height: 40px;
+    transition: 0.2s;
+ }
+ .msg_input:hover {
+    cursor: pointer;
+    background-color: #fff;
+  }
 
  @media (max-width: 480px) {
     .user_container {

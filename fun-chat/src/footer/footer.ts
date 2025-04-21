@@ -8,7 +8,7 @@ export function createFooter(): HTMLElement {
   const footer = createHtmlElement('footer');
   const wrapperFooter = createHtmlElement('div', 'wrapper_footer');
   const schoolTitile = createHtmlElement('p', 'footer_info', 'RSSchool');
-  const linkGitHub = createHtmlElement('a', 'footer_info', 'swansii1') as HTMLLinkElement;
+  const linkGitHub = createHtmlElement('a', 'footer_info git_hub', 'swansii1') as HTMLLinkElement;
   const yearCreation = createHtmlElement('p', 'footer_info', '2025');
   linkGitHub.href = 'https://github.com/swansii1';
   linkGitHub.target = '_blank';

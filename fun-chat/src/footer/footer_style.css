@@ -13,3 +13,7 @@ a.footer_info{
     font-size: 18px;
     color: black;
 }
+.git_hub:hover {
+    color: rgba(124, 117, 108, 0.795);
+    transition: 0.2s;
+}
