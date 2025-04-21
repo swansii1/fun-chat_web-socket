@@ -30,6 +30,7 @@ export function createHeader(): HTMLElement {
     } else if (ind === 1) {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
+        setLoggedOutStatus(true);
         if (ws && currentUser) {
           const logoutMessage = {
             id: generateId(),
@@ -43,7 +44,6 @@ export function createHeader(): HTMLElement {
           ws.send(JSON.stringify(logoutMessage));
         }
         ws?.close();
-        setLoggedOutStatus(true);
         sessionStorage.removeItem('userCredentials');
         setCurrentUser(null);
         router.navigate('/login');

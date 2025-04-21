@@ -11,7 +11,9 @@ const page = window.location.pathname;
 export function setLoggedOutStatus(status: boolean) {
   isLoggedOut = status;
 }
-
+export function isAuthenticated(): boolean {
+  return isLoggedOut === true;
+}
 export const generateId = () => Math.random().toString(36).substring(2, 15);
 
 export function setCurrentUser(user: { login: string } | null) {
@@ -37,7 +39,8 @@ export function connectWebSocket(): Promise<WebSocket> {
     const socket = new WebSocket('ws://localhost:4000');
 
     socket.addEventListener('open', () => {
-      console.log('Соединение установлено');
+      isLoggedOut = true;
+
       if (userCredentials) {
         const authMessage = {
           id: generateId(),
@@ -60,6 +63,7 @@ export function connectWebSocket(): Promise<WebSocket> {
 
     socket.addEventListener('close', () => {
       console.log('Соединение закрыто');
+      // isLoggedOut = false;
 
       if (isLoggedOut) {
         return;
