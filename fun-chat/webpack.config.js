@@ -42,12 +42,9 @@ export default {
   mode: 'development',
 
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
+    static: './dist',
     compress: true,
     historyApiFallback: true,
-    port: 9000,
     hot: true,
   },
 };
