@@ -174,6 +174,11 @@
     cursor: pointer;
     background-color: #fff;
   }
+  .time_msg{
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
 
  @media (max-width: 480px) {
     .user_container {

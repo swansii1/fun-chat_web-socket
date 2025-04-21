@@ -104,7 +104,11 @@ export function createMain(): HTMLElement {
       const messageContainer = createHtmlElement('div', 'msg_container_you');
       const textContent = createHtmlElement('h4', 'text_user', `${text}`);
       const nameUser = createHtmlElement('p', 'message_from', `Вы`);
-      messageContainer.append(nameUser, textContent);
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const time = createHtmlElement('p', 'time_msg', `${hours}:${minutes}`);
+      messageContainer.append(nameUser, textContent, time);
       messageList.append(messageContainer);
       msgInput.value = '';
     }
@@ -174,7 +178,6 @@ export function createMain(): HTMLElement {
     if (active.type === 'MSG_SEND') {
       const { from, text, to } = active.payload.message;
       const outherUser = from === currentUser?.login ? to : from;
-
       const chat = chatMaps.get(outherUser) || [];
       chat.push({ from, text });
       chatMaps.set(outherUser, chat);
@@ -190,6 +193,7 @@ export function createMain(): HTMLElement {
           'message_from',
           from === currentUser?.login ? 'Вы' : from,
         );
+
         messageContainer.append(nameUser, textContent);
         messageList.append(messageContainer);
       }
