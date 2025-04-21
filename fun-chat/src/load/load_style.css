@@ -1,0 +1,13 @@
+.load{
+    width: 50%;
+    height: 170px;
+    position: relative;
+    bottom: 300px;
+    left: 26%;
+    z-index: 3;
+    background-color: #352a2a63;
+    font-size: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

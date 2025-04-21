@@ -1,6 +1,7 @@
 import './authoriz_style.css';
 import { createHtmlElement } from '../helper';
 import { router } from '../router';
+import {load} from '../load/load'
 
 export let ws: WebSocket | null = null;
 export let currentUser: { login: string } | null = null;
@@ -77,6 +78,7 @@ export function connectWebSocket(): Promise<WebSocket> {
           console.error('Ошибка при реконнекте:', err);
         }
       }, 2000);
+      load();
     });
 
     ws = socket;
