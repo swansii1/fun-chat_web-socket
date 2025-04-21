@@ -1,6 +1,7 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { fileURLToPath } from 'url';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,10 +16,7 @@ export default {
       },
       {
         test: /\.css$/i,
-        use: [
-          'style-loader', // Вставляет стили в DOM
-          'css-loader', // Преобразует CSS в CommonJS
-        ],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
@@ -31,9 +29,13 @@ export default {
     clean: true,
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'src/header/favicon.png', to: 'favicon.png' }],
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
+      favicon: './src/header/favicon.png',
     }),
   ],
   devtool: 'source-map',
