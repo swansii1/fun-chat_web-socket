@@ -1,8 +1,7 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { fileURLToPath } from 'url';
-// import CopyPlugin from 'copy-webpack-plugin';
-// import { plugin } from 'typescript-eslint';
+import CopyPlugin from 'copy-webpack-plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -29,11 +28,10 @@ export default {
     path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
-  // plugins: [
-  //   new CopyPlugin({
-  //     patterns: [{ from: 'src/header/favicon.png', to: 'favicon.png' }],
-  //   }),
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: 'src/header/my-favicon.png', to: 'my-favicon.png' }],
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',
