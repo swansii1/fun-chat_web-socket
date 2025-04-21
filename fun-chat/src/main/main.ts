@@ -25,6 +25,7 @@ export function createMain(): HTMLElement {
   const nikName = createHtmlElement('p', 'nik_name_user');
   const statusUser = createHtmlElement('p', 'status_user');
   const messageList = createHtmlElement('div', 'messages_list');
+  const search = createHtmlElement('input', 'search_user') as HTMLInputElement;
 
   msgInput.disabled = true;
   btnSend.disabled = true;
@@ -132,6 +133,7 @@ export function createMain(): HTMLElement {
 
   function handleMessageIncoming(event: MessageEvent) {
     const active = JSON.parse(event.data);
+    usersContainer.prepend(search);
 
     if (active.type === 'USER_EXTERNAL_LOGOUT') {
       const { login, isLogined } = active.payload.user;
@@ -206,7 +208,36 @@ export function createMain(): HTMLElement {
       if (!Array.isArray(users)) {
         return;
       }
+      search.addEventListener('input', () => {
+        const filterValue = search.value.trim().toLowerCase();
+        const userContainers = usersContainer.querySelectorAll<HTMLElement>('.user_container');
 
+        userContainers.forEach((container) => {
+          const userNameElem = container.querySelector('.user_item');
+          if (!userNameElem) {
+            return;
+          }
+          const userName = userNameElem.textContent?.toLowerCase() || '';
+          const isOnline = container.querySelector('.indentifiers_online') !== null;
+          const isOffline = container.querySelector('.indentifiers_offline') !== null;
+
+          if (userName.includes(filterValue)) {
+            container.style.display = '';
+          } else {
+            container.style.display = 'none';
+          }
+
+          if (isOnline) {
+            container.querySelector('.status_user')?.classList.remove('offline');
+            container.querySelector('.status_user')?.classList.add('online');
+          }
+
+          if (isOffline) {
+            container.querySelector('.status_user')?.classList.add('offline');
+            container.querySelector('.status_user')?.classList.remove('online');
+          }
+        });
+      });
       users
         .filter((user: { login: string }) => user.login !== currentUser?.login)
         .forEach((user: { login: string; isLogined: boolean }) => {
@@ -273,6 +304,36 @@ export function createMain(): HTMLElement {
       if (!Array.isArray(users)) {
         return;
       }
+      search.addEventListener('input', () => {
+        const filterValue = search.value.trim().toLowerCase();
+        const userContainers = usersContainer.querySelectorAll<HTMLElement>('.user_container');
+
+        userContainers.forEach((container) => {
+          const userNameElem = container.querySelector('.user_item');
+          if (!userNameElem) {
+            return;
+          }
+          const userName = userNameElem.textContent?.toLowerCase() || '';
+          const isOnline = container.querySelector('.indentifiers_online') !== null;
+          const isOffline = container.querySelector('.indentifiers_offline') !== null;
+
+          if (userName.includes(filterValue)) {
+            container.style.display = '';
+          } else {
+            container.style.display = 'none';
+          }
+
+          if (isOnline) {
+            container.querySelector('.status_user')?.classList.remove('offline');
+            container.querySelector('.status_user')?.classList.add('online');
+          }
+
+          if (isOffline) {
+            container.querySelector('.status_user')?.classList.add('offline');
+            container.querySelector('.status_user')?.classList.remove('online');
+          }
+        });
+      });
 
       users.forEach((user: { login: string; isLogined: boolean }) => {
         const contElem = createHtmlElement('div', 'user_container');
