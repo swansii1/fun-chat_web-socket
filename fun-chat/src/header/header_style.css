@@ -6,6 +6,7 @@
     margin: 0 auto;
     align-items: center;
     border-radius: 10px;
+
 }
 .header_none{
     display: none;
@@ -20,6 +21,20 @@
     transition: 0.2s;
 }
 .user_name{
-    font-size: 18px;
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 100%;
+    width: auto;
+}
+
+@media (max-width: 480px) {
+    .btn_container{
+        flex-direction: column;
+    }
+    .btn_header{
+        width: 90%;
+        font-size: 70%;
+    }
+    .user_name {
+        font-size: 80%;
+        width: 80%;
+    }
 }
