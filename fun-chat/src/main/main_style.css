@@ -77,7 +77,7 @@
 
 .user_container:hover {
     background-color: rgba(128, 128, 128, 0.384);
-    transition: 0.1s;
+    transition: 0.2s;
 }
 
 .indentifiers_online {
